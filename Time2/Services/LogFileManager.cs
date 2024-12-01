@@ -48,6 +48,8 @@ internal class LogFileManager
         }
 
         var logInfo = Directory.EnumerateFiles(_logFolderPath)
+            .Select(Path.GetFileName)
+            .OfType<string>()
             .Select(ParseLogFilename)
             .OfType<LogInfo>()
             .MaxBy(x => x.Created);

@@ -1,4 +1,6 @@
-﻿namespace Time2.Models;
+﻿using Time2.Services;
+
+namespace Time2.Models;
 
 internal class Log(DateTime created, IEnumerable<LogEntry> entries)
 {

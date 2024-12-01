@@ -65,6 +65,6 @@ internal partial class LogEntryParser
     [GeneratedRegex(@"^[_a-zA-ZåäöÅÄÖ]")]
     private static partial Regex LabelRegex();
 
-    [GeneratedRegex(@"^-(?<timespan>\d\d:\d\d)=>(?<label>[_a-zA-ZåäöÅÄÖ]+)$")]
+    [GeneratedRegex(@"^-(?<timespan>\d\d:\d\d)=>(?<label>[_a-zA-ZåäöÅÄÖ][_a-zA-ZåäöÅÄÖ0-9]+)$")]
     private static partial Regex SubSegmentRegex();
 }

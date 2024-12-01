@@ -1,4 +1,6 @@
-﻿namespace Time2.Models;
+﻿using Time2.Models;
+
+namespace Time2.Services;
 
 internal class LogValidator
 {
