@@ -2,6 +2,13 @@
 using Time2.Models;
 using Time2.Services;
 
+var preProcessors = new List<PreProcessor>()
+{
+    new ShortFormTimePreProcessor(),
+    new NowPreProcessor(),
+    new SubSegmentPreProcessor(),
+};
+
 var log = LogFileManager.Load()
     ?? new Log(DateTime.Now, []);
 
@@ -24,7 +31,7 @@ while (true)
     {
         try
         {
-            var entries = LogEntryParser.ParseLine(input);
+            var entries = ParseLine(input);
             foreach (var entry in entries)
             {
                 log.Append(entry);
@@ -37,6 +44,28 @@ while (true)
             Console.ReadKey(true);
         }
     }
+}
+
+
+IEnumerable<LogEntry> ParseLine(string line)
+{
+    var words = line.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+    var entries = words
+        .Select(PreProcess)
+        .Select(LogEntryParser.ParseEntry);
+
+    return entries;
+}
+
+string PreProcess(string word)
+{
+    foreach (var preProcessor in preProcessors)
+    {
+        word = preProcessor.Process(word);
+    }
+
+    return word;
 }
 
 // TODO: pre-processors like 0800, 8, . and so on

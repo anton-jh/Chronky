@@ -5,13 +5,6 @@ using Time2.Models;
 namespace Time2.Services;
 internal partial class LogEntryParser
 {
-    public static IEnumerable<LogEntry> ParseLine(string line)
-    {
-        return line.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-            .Select(ParseEntry);
-    }
-
-
     public static LogEntry ParseEntry(string entry)
     {
         if (string.IsNullOrWhiteSpace(entry) == false)
