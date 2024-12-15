@@ -29,6 +29,7 @@ while (true)
 
         if (string.IsNullOrWhiteSpace(input))
         {
+            log.ResetCursor();
             editMode = true;
         }
         else

@@ -10,7 +10,7 @@ internal class Log(DateTime created, IEnumerable<LogEntry> entries)
 
     public IEnumerable<LogEntry> Entries => _entries;
     public DateTime Created { get; } = created;
-    public int CursorPosition { get; private set; } = 3;
+    public int CursorPosition { get; private set; }
 
 
     public void Append(LogEntry entry)
@@ -83,6 +83,11 @@ internal class Log(DateTime created, IEnumerable<LogEntry> entries)
         {
             (_entries[CursorPosition - 1], _entries[CursorPosition]) = (_entries[CursorPosition], _entries[CursorPosition - 1]);
         }
+    }
+
+    public void ResetCursor()
+    {
+        CursorPosition = _entries.Count - 1;
     }
 
     public IEnumerable<string> Display(bool showCursor) // todo maybe move this up a layer and print directly?
