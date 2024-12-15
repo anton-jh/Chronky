@@ -1,22 +1,16 @@
 ﻿using Time2.Exceptions;
-using Time2.Services;
 
 namespace Time2.Models;
 
-internal class Log(DateTime created, IEnumerable<LogEntry> entries)
+internal class Log(DateTime created, IEnumerable<string> entries)
 {
-    private readonly List<LogEntry> _entries = entries.ToList();
+    private readonly List<string> _entries = entries.ToList();
 
 
-    public IEnumerable<LogEntry> Entries => _entries;
+    public IEnumerable<string> Entries => _entries;
     public DateTime Created { get; } = created;
     public int CursorPosition { get; private set; }
 
-
-    public void Append(LogEntry entry)
-    {
-        _entries.Add(entry);
-    }
 
     public void MoveCursorUp()
     {
@@ -32,26 +26,6 @@ internal class Log(DateTime created, IEnumerable<LogEntry> entries)
         {
             CursorPosition++;
         }
-    }
-
-    public LogEntry? GetSelectedEntry()
-    {
-        if (_entries.Count == 0 || CursorPosition == -1)
-        {
-            return null;
-        }
-
-        return _entries[CursorPosition];
-    }
-
-    public void ReplaceSelectedEntry(LogEntry entry)
-    {
-        if (_entries.Count == 0 || CursorPosition == -1)
-        {
-            throw new InvalidLogOperationException("No selected entry to replace");
-        }
-
-        _entries[CursorPosition] = entry;
     }
 
     public void RemoveSelectedEntry()
@@ -85,34 +59,9 @@ internal class Log(DateTime created, IEnumerable<LogEntry> entries)
         }
     }
 
-    public void ResetCursor()
+    public void Insert(string entry)
     {
-        CursorPosition = _entries.Count - 1;
-    }
-
-    public IEnumerable<string> Display(bool showCursor) // todo maybe move this up a layer and print directly?
-    {
-        var lines = _entries
-            .Select((x, i) => $"{(showCursor && CursorPosition == i ? "> " : "  ")}{x.Display()}")
-            .ToList();
-
-        if (lines.Count == 0)
-        {
-            return [];
-        }
-
-        var longestLine = lines
-            .Select(x => x.Length)
-            .Max();
-
-        var validationResult = new LogValidator().Validate(_entries);
-
-        if (validationResult.Error is LogValidator.LogValidatorError error)
-        {
-            var line = lines[error.LineNumber];
-            lines[error.LineNumber] = $"{line}{new string(' ', longestLine - line.Length)} !!{error.Message}!!";
-        }
-
-        return lines;
+        _entries.Insert(CursorPosition, entry);
+        CursorPosition++;
     }
 }

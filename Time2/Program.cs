@@ -16,11 +16,7 @@ bool editMode = false;
 
 while (true)
 {
-    Console.Clear();
-    foreach (var line in log.Display(showCursor: editMode))
-    {
-        Console.WriteLine(line);
-    }
+    LogRenderer.Render(log);
 
     if (!editMode)
     {
