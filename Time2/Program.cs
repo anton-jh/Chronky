@@ -12,37 +12,72 @@ var preProcessors = new List<PreProcessor>()
 var log = LogFileManager.Load()
     ?? new Log(DateTime.Now, []);
 
+bool editMode = false;
+
 while (true)
 {
     Console.Clear();
-    foreach (var line in log.Display())
+    foreach (var line in log.Display(showCursor: editMode))
     {
         Console.WriteLine(line);
     }
-    Console.Write("\n> ");
-    var input = Console.ReadLine();
 
-    if (string.IsNullOrWhiteSpace(input))
+    if (!editMode)
     {
-        // TODO: edit mode
-        log.RemoveLast();
-        LogFileManager.Save(log);
+        Console.Write("> ");
+        var input = Console.ReadLine();
+
+        if (string.IsNullOrWhiteSpace(input))
+        {
+            editMode = true;
+        }
+        else
+        {
+            try
+            {
+                var entries = ParseLine(input);
+                foreach (var entry in entries)
+                {
+                    log.Append(entry);
+                }
+                LogFileManager.Save(log);
+            }
+            catch (LogParsingException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.ReadKey(true);
+            }
+        }
     }
     else
     {
-        try
+        var keyInfo = Console.ReadKey(intercept: true);
+        switch (keyInfo.Key)
         {
-            var entries = ParseLine(input);
-            foreach (var entry in entries)
-            {
-                log.Append(entry);
-            }
-            LogFileManager.Save(log);
-        }
-        catch (LogParsingException ex)
-        {
-            Console.WriteLine(ex.Message);
-            Console.ReadKey(true);
+            case ConsoleKey.UpArrow when keyInfo.Modifiers.HasFlag(ConsoleModifiers.Alt):
+                log.MoveSelectedEntryUp();
+                break;
+            case ConsoleKey.DownArrow when keyInfo.Modifiers.HasFlag(ConsoleModifiers.Alt):
+                log.MoveSelectedEntryDown();
+                break;
+            case ConsoleKey.UpArrow:
+                log.MoveCursorUp();
+                break;
+            case ConsoleKey.DownArrow:
+                log.MoveCursorDown();
+                break;
+            case ConsoleKey.Backspace:
+                log.RemoveSelectedEntry();
+                break;
+            case ConsoleKey.Escape:
+                editMode = false;
+                break;
+            case ConsoleKey.Enter:
+                // todo accept input and insert above
+                break;
+            case ConsoleKey.Spacebar:
+                // todo accept input and replace selected
+                break;
         }
     }
 }
