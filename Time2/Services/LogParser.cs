@@ -1,5 +1,4 @@
 ﻿using System.Text.RegularExpressions;
-using Time2.Exceptions;
 using Time2.Models;
 
 namespace Time2.Services;
@@ -25,7 +24,7 @@ internal partial class LogEntryParser
             }
         }
 
-        throw new LogParsingException($"Invalid entry '{entry}'");
+        return new InvalidLogEntry(entry, "Invalid entry");
     }
 
 

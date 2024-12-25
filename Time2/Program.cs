@@ -12,21 +12,22 @@ var preProcessors = new List<PreProcessor>()
 var log = LogFileManager.Load()
     ?? new Log(DateTime.Now, []);
 
-bool editMode = false;
+bool insertMode = true;
 
 while (true)
 {
-    LogRenderer.Render(log);
+    var validationResult = new LogValidator().Validate(log.Entries);
+    LogRenderer.Render(log, insertMode, validationResult);
 
-    if (!editMode)
+    if (insertMode)
     {
-        Console.Write("> ");
+        Console.CursorLeft = 2;
+        Console.CursorTop = log.CursorPosition;
         var input = Console.ReadLine();
 
         if (string.IsNullOrWhiteSpace(input))
         {
-            log.ResetCursor();
-            editMode = true;
+            insertMode = false;
         }
         else
         {
@@ -35,7 +36,7 @@ while (true)
                 var entries = ParseLine(input);
                 foreach (var entry in entries)
                 {
-                    log.Append(entry);
+                    log.Insert(LogEntryParser.ParseEntry(entry));
                 }
                 LogFileManager.Save(log);
             }
@@ -64,29 +65,28 @@ while (true)
                 log.MoveCursorDown();
                 break;
             case ConsoleKey.Backspace:
+                var pos = log.CursorPosition;
                 log.RemoveSelectedEntry();
+                if (log.CursorPosition == pos)
+                {
+                    log.MoveCursorUp();
+                }
                 break;
             case ConsoleKey.Escape:
-                editMode = false;
-                break;
             case ConsoleKey.Enter:
-                // todo accept input and insert above
-                break;
-            case ConsoleKey.Spacebar:
-                // todo accept input and replace selected
+                insertMode = true;
                 break;
         }
     }
 }
 
 
-IEnumerable<LogEntry> ParseLine(string line)
+IEnumerable<string> ParseLine(string line)
 {
     var words = line.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
     var entries = words
-        .Select(PreProcess)
-        .Select(LogEntryParser.ParseEntry);
+        .Select(PreProcess);
 
     return entries;
 }
@@ -102,4 +102,4 @@ string PreProcess(string word)
 }
 
 // TODO: +segments (extra-segments) keep these at the top of the log always, no matter where they are created
-// TODO: report with rounding and option to carry rests to new file (as +segments)
+// TODO: report with rounding and option to carry rests to new file (as +segments) (maybe?)

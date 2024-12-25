@@ -7,6 +7,20 @@ internal abstract record LogEntry
 }
 
 
+internal record InvalidLogEntry(string Value, string ErrorMessage)
+    : LogEntry
+{
+    public override string Display()
+    {
+        return Value;
+    }
+
+    public override string Serialize()
+    {
+        return Value;
+    }
+}
+
 internal record TimeLogEntry(CustomTime Time)
     : LogEntry
 {

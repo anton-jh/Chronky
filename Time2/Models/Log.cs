@@ -2,12 +2,12 @@
 
 namespace Time2.Models;
 
-internal class Log(DateTime created, IEnumerable<string> entries)
+internal class Log(DateTime created, IEnumerable<LogEntry> entries)
 {
-    private readonly List<string> _entries = entries.ToList();
+    private readonly List<LogEntry> _entries = entries.ToList();
 
 
-    public IEnumerable<string> Entries => _entries;
+    public IEnumerable<LogEntry> Entries => _entries;
     public DateTime Created { get; } = created;
     public int CursorPosition { get; private set; }
 
@@ -22,7 +22,7 @@ internal class Log(DateTime created, IEnumerable<string> entries)
 
     public void MoveCursorDown()
     {
-        if (CursorPosition < _entries.Count - 1)
+        if (CursorPosition < _entries.Count) // no (- 1), allow passing the end
         {
             CursorPosition++;
         }
@@ -30,9 +30,9 @@ internal class Log(DateTime created, IEnumerable<string> entries)
 
     public void RemoveSelectedEntry()
     {
-        if (_entries.Count == 0 || CursorPosition == -1)
+        if (_entries.Count == 0 || CursorPosition == -1 || CursorPosition > _entries.Count - 1)
         {
-            throw new InvalidLogOperationException("No selected entry to remove");
+            return;
         }
 
         _entries.RemoveAt(CursorPosition);
@@ -55,13 +55,18 @@ internal class Log(DateTime created, IEnumerable<string> entries)
     {
         if (_entries.Count >= 2 && CursorPosition < _entries.Count - 1)
         {
-            (_entries[CursorPosition - 1], _entries[CursorPosition]) = (_entries[CursorPosition], _entries[CursorPosition - 1]);
+            (_entries[CursorPosition + 1], _entries[CursorPosition]) = (_entries[CursorPosition], _entries[CursorPosition + 1]);
         }
     }
 
-    public void Insert(string entry)
+    public void Insert(LogEntry entry)
     {
         _entries.Insert(CursorPosition, entry);
         CursorPosition++;
     }
 }
+
+
+// TODO:
+// allow cursorPos == -1 to insert before and == length to insert after.
+// render with for loop to allow rendering cursor outside of log?
