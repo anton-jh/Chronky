@@ -24,6 +24,7 @@ internal class LogValidator
                 TimeLogEntry timeEntry => ValidateTime(timeEntry),
                 LabelLogEntry labelEntry => ValidateLabel(labelEntry),
                 SubSegmentLogEntry subSegmentLogEntry => ValidateSubSegment(subSegmentLogEntry),
+                ExtraSegmentLogEntry extraSegmentLogEntry => null,
                 InvalidLogEntry invalidLogEntry => new LogValidatorError(_lineNumber, invalidLogEntry.ErrorMessage),
                 _ => throw new ArgumentException($"Invalid subclass '{entry.GetType().Name}'")
             };

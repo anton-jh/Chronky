@@ -50,6 +50,7 @@ internal class Log(DateTime created, IEnumerable<LogEntry> entries)
         if (_entries.Count >= 2 && CursorPosition > 0)
         {
             (_entries[CursorPosition - 1], _entries[CursorPosition]) = (_entries[CursorPosition], _entries[CursorPosition - 1]);
+            CursorPosition--;
         }
     }
 
@@ -58,6 +59,7 @@ internal class Log(DateTime created, IEnumerable<LogEntry> entries)
         if (_entries.Count >= 2 && CursorPosition < _entries.Count - 1)
         {
             (_entries[CursorPosition + 1], _entries[CursorPosition]) = (_entries[CursorPosition], _entries[CursorPosition + 1]);
+            CursorPosition++;
         }
     }
 

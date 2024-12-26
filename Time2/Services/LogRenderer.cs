@@ -39,6 +39,7 @@ internal static class LogRenderer
         var logResult = LogCalculator.Sum(log, now);
         var longestAccountLabel = logResult.Accounts.Keys.MaxBy(x => x.Length)?.Length ?? 0;
         var accountLines = logResult.Accounts
+            .OrderBy(kv => kv.Key)
             .Select(kv => $"{new string(' ', longestAccountLabel - kv.Key.Length)}{kv.Key}: {kv.Value}")
             .ToList();
 
@@ -52,10 +53,8 @@ internal static class LogRenderer
             lines.Add($"");
         }
 
-        //lines.Add("");
         lines.Add($"End of day: {logResult.ProjectedEndOfDay?.ToString() ?? "N/A"}");
 
-        //lines.Add("");
         lines.Add($"Total: {logResult.Total}");
 
         lines.Add("");

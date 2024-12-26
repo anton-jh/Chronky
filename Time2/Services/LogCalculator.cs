@@ -49,6 +49,12 @@ internal static class LogCalculator
                         - subSegmentEntry.TimeSpan;
                 }
             }
+            else if (entry is ExtraSegmentLogEntry extraSegmentEntry)
+            {
+                accounts[extraSegmentEntry.Text] =
+                        accounts.GetValueOrDefault(extraSegmentEntry.Text, new CustomTime(0, 0))
+                        + extraSegmentEntry.TimeSpan;
+            }
         }
 
         var isOpen = false;

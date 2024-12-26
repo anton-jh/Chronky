@@ -6,7 +6,7 @@ var preProcessors = new List<PreProcessor>()
 {
     new ShortFormTimePreProcessor(),
     new NowPreProcessor(),
-    new SubSegmentPreProcessor(),
+    new SegmentPreProcessor(),
 };
 
 var log = LogFileManager.Load()
@@ -16,6 +16,8 @@ bool insertMode = true;
 
 while (true)
 {
+    var touched = false;
+
     var validationResult = new LogValidator().Validate(log.Entries);
     LogRenderer.Render(log, insertMode, validationResult, Console.BufferWidth);
 
@@ -31,18 +33,11 @@ while (true)
         }
         else
         {
-            try
+            var entries = ParseLine(input);
+            foreach (var entry in entries)
             {
-                var entries = ParseLine(input);
-                foreach (var entry in entries)
-                {
-                    log.Insert(LogEntryParser.ParseEntry(entry));
-                }
-            }
-            catch (LogParsingException ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.ReadKey(true);
+                log.Insert(LogEntryParser.ParseEntry(entry));
+                touched = true;
             }
         }
     }
@@ -53,11 +48,13 @@ while (true)
         var keyInfo = Console.ReadKey(intercept: true);
         switch (keyInfo.Key)
         {
-            case ConsoleKey.UpArrow when keyInfo.Modifiers.HasFlag(ConsoleModifiers.Alt):
+            case ConsoleKey.UpArrow when keyInfo.Modifiers.HasFlag(ConsoleModifiers.Control):
                 log.MoveSelectedEntryUp();
+                touched = true;
                 break;
-            case ConsoleKey.DownArrow when keyInfo.Modifiers.HasFlag(ConsoleModifiers.Alt):
+            case ConsoleKey.DownArrow when keyInfo.Modifiers.HasFlag(ConsoleModifiers.Control):
                 log.MoveSelectedEntryDown();
+                touched = true;
                 break;
             case ConsoleKey.UpArrow:
                 log.MoveCursorUp();
@@ -72,6 +69,7 @@ while (true)
                 {
                     log.MoveCursorUp();
                 }
+                touched = true;
                 break;
             case ConsoleKey.Escape:
             case ConsoleKey.Enter:
@@ -80,7 +78,10 @@ while (true)
         }
     }
 
-    LogFileManager.Save(log);
+    if (touched)
+    {
+        LogFileManager.Save(log);
+    }
 }
 
 
@@ -110,5 +111,5 @@ string PreProcess(string word)
     return word;
 }
 
-// TODO: +segments (extra-segments) keep these at the top of the log always, no matter where they are created
-// TODO: report with rounding and option to carry rests to new file (as +segments) (maybe?)
+// IDEA: +segments (extra-segments) keep these at the top of the log always, no matter where they are created
+// IDEA: report with rounding and option to carry rests to new file (as +segments)

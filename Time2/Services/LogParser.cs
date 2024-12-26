@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using Time2.Models;
+﻿using Time2.Models;
 
 namespace Time2.Services;
 internal partial class LogEntryParser
@@ -10,9 +9,10 @@ internal partial class LogEntryParser
         {
             var parsers = new List<Func<string, LogEntry?>>()
             {
-                TryParseTime,
-                TryParseLabel,
-                TryParseSubSegment
+                TimeLogEntry.TryParse,
+                LabelLogEntry.TryParse,
+                SubSegmentLogEntry.TryParse,
+                ExtraSegmentLogEntry.TryParse,
             };
 
             foreach (var parser in parsers)
@@ -26,44 +26,4 @@ internal partial class LogEntryParser
 
         return new InvalidLogEntry(entry, "Invalid entry");
     }
-
-
-    public static TimeLogEntry? TryParseTime(string line)
-    {
-        return (CustomTime.TryParse(line) is CustomTime time
-            && time.TotalMinutes > 0)
-            ? new(time)
-            : null;
-    }
-
-    public static LabelLogEntry? TryParseLabel(string line)
-    {
-        return LabelRegex().IsMatch(line)
-            ? new(line)
-            : null;
-    }
-
-    public static SubSegmentLogEntry? TryParseSubSegment(string line)
-    {
-        var match = SubSegmentRegex().Match(line);
-        if (match.Success == false)
-        {
-            return null;
-        }
-
-        var time = CustomTime.TryParse(match.Groups["timespan"].Value);
-        if (time is null)
-        {
-            return null;
-        }
-
-        return new SubSegmentLogEntry(time, match.Groups["label"].Value);
-    }
-
-
-    [GeneratedRegex(@"^[_a-zA-ZåäöÅÄÖ]")]
-    private static partial Regex LabelRegex();
-
-    [GeneratedRegex(@"^-(?<timespan>\d\d:\d\d)=>(?<label>[_a-zA-ZåäöÅÄÖ][_a-zA-ZåäöÅÄÖ0-9]+)$")]
-    private static partial Regex SubSegmentRegex();
 }

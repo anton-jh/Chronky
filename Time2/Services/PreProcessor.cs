@@ -53,12 +53,12 @@ internal class NowPreProcessor
     }
 }
 
-internal partial class SubSegmentPreProcessor
+internal partial class SegmentPreProcessor
     : PreProcessor
 {
     public override string Process(string input)
     {
-        var match = ShortFormSubSegmentRegex().Match(input);
+        var match = ShortFormSegmentRegex().Match(input);
         if (match.Success == false)
         {
             return input;
@@ -82,9 +82,9 @@ internal partial class SubSegmentPreProcessor
             }
         }
 
-        return $"-{hours:D2}:{minutes:D2}=>{match.Groups["label"].Value}";
+        return $"{match.Groups["prefix"].Value}{hours:D2}:{minutes:D2}=>{match.Groups["label"].Value}";
     }
 
-    [GeneratedRegex(@"^-((?<h>\d+)h)?((?<m>\d+)m)?=>(?<label>.+)$")]
-    private static partial Regex ShortFormSubSegmentRegex();
+    [GeneratedRegex(@"^(?<prefix>[-+])((?<h>\d+)h)?((?<m>\d+)m)?=>(?<label>.+)$")]
+    private static partial Regex ShortFormSegmentRegex();
 }
