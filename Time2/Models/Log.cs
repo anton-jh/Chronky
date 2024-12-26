@@ -8,6 +8,10 @@ internal class Log(DateTime created, IEnumerable<LogEntry> entries)
     public IEnumerable<LogEntry> Entries => _entries;
     public DateTime Created { get; } = created;
     public int CursorPosition { get; private set; } = entries.Count() - 1;
+    public CustomTime? StartTime => _entries
+        .OfType<TimeLogEntry>()
+        .FirstOrDefault()?
+        .Time;
 
 
     public void MoveCursorUp()

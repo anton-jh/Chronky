@@ -3,7 +3,7 @@
 namespace Time2.Services;
 internal static class LogRenderer
 {
-    public static void Render(Log log, bool insertMode, LogValidator.LogValidatorResult validationResult)
+    public static void Render(Log log, bool insertMode, LogValidator.LogValidatorResult validationResult, int bufferWidth)
     {
         var entries = log.Entries.ToList();
 
@@ -34,6 +34,35 @@ internal static class LogRenderer
                 lines.Add("> ");
             }
         }
+
+        var now = DateTime.Now;
+        var logResult = LogCalculator.Sum(log, now);
+        var longestAccountLabel = logResult.Accounts.Keys.MaxBy(x => x.Length)?.Length ?? 0;
+        var accountLines = logResult.Accounts
+            .Select(kv => $"{new string(' ', longestAccountLabel - kv.Key.Length)}{kv.Key}: {kv.Value}")
+            .ToList();
+
+        lines.Add("");
+        if (logResult.IsOpen)
+        {
+            lines.Add($"Assuming last period closed now ({LogCalculator.GetNow(now)}):");
+        }
+        else
+        {
+            lines.Add($"");
+        }
+
+        //lines.Add("");
+        lines.Add($"End of day: {logResult.ProjectedEndOfDay?.ToString() ?? "N/A"}");
+
+        //lines.Add("");
+        lines.Add($"Total: {logResult.Total}");
+
+        lines.Add("");
+        lines.AddRange(accountLines.Where(x => !x.TrimStart().StartsWith('_')));
+
+        lines.Add("");
+        lines.AddRange(accountLines.Where(x => x.TrimStart().StartsWith('_')));
 
         var rendered = string.Join('\n', lines);
         Console.Clear();

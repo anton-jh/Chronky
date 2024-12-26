@@ -20,10 +20,10 @@ internal class ShortFormTimePreProcessor
 
         return input switch
         {
-        [var a] => $"0{a}:00",
-        [var a, var b] => $"{a}{b}:00",
-        [var a, var b, var c] => $"0{a}:{b}{c}",
-        [var a, var b, var c, var d] => $"{a}{b}:{c}{d}",
+            [var a] => $"0{a}:00",
+            [var a, var b] => $"{a}{b}:00",
+            [var a, var b, var c] => $"0{a}:{b}{c}",
+            [var a, var b, var c, var d] => $"{a}{b}:{c}{d}",
             _ => input
         };
     }

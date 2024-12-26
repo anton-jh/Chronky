@@ -17,7 +17,7 @@ bool insertMode = true;
 while (true)
 {
     var validationResult = new LogValidator().Validate(log.Entries);
-    LogRenderer.Render(log, insertMode, validationResult);
+    LogRenderer.Render(log, insertMode, validationResult, Console.BufferWidth);
 
     if (insertMode)
     {
@@ -48,6 +48,8 @@ while (true)
     }
     else
     {
+        Console.CursorTop = log.CursorPosition + 1;
+        Console.CursorLeft = 0;
         var keyInfo = Console.ReadKey(intercept: true);
         switch (keyInfo.Key)
         {
