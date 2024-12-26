@@ -1,6 +1,4 @@
-﻿using Time2.Exceptions;
-
-namespace Time2.Models;
+﻿namespace Time2.Models;
 
 internal class Log(DateTime created, IEnumerable<LogEntry> entries)
 {
@@ -9,12 +7,12 @@ internal class Log(DateTime created, IEnumerable<LogEntry> entries)
 
     public IEnumerable<LogEntry> Entries => _entries;
     public DateTime Created { get; } = created;
-    public int CursorPosition { get; private set; }
+    public int CursorPosition { get; private set; } = entries.Count() - 1;
 
 
     public void MoveCursorUp()
     {
-        if (CursorPosition > 0)
+        if (CursorPosition >= 0)
         {
             CursorPosition--;
         }
@@ -22,7 +20,7 @@ internal class Log(DateTime created, IEnumerable<LogEntry> entries)
 
     public void MoveCursorDown()
     {
-        if (CursorPosition < _entries.Count) // no (- 1), allow passing the end
+        if (CursorPosition < _entries.Count - 1)
         {
             CursorPosition++;
         }
@@ -61,12 +59,7 @@ internal class Log(DateTime created, IEnumerable<LogEntry> entries)
 
     public void Insert(LogEntry entry)
     {
-        _entries.Insert(CursorPosition, entry);
         CursorPosition++;
+        _entries.Insert(CursorPosition, entry);
     }
 }
-
-
-// TODO:
-// allow cursorPos == -1 to insert before and == length to insert after.
-// render with for loop to allow rendering cursor outside of log?

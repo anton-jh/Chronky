@@ -5,27 +5,34 @@ internal static class LogRenderer
 {
     public static void Render(Log log, bool insertMode, LogValidator.LogValidatorResult validationResult)
     {
-        var lines = log.Entries.Select((entry, i) =>
+        var entries = log.Entries.ToList();
+
+        var lines = new List<string>();
+
+        for (int i = -1; i <= entries.Count - 1; i++)
         {
             var line = "";
-
+            
             line += !insertMode && log.CursorPosition == i
                 ? "> "
                 : "  ";
 
-            line += entry.Display();
-
-            if (validationResult.Error is LogValidator.LogValidatorError error && error.LineNumber == i)
+            if (i >= 0 && i < entries.Count)
             {
-                line += $"    !!{error.Message}!!";
+                line += entries[i].Display();
+
+                if (validationResult.Error is LogValidator.LogValidatorError error && error.LineNumber == i)
+                {
+                    line += $"    !!{error.Message}!!";
+                }
             }
 
-            return line;
-        }).ToList();
+            lines.Add(line);
 
-        if (insertMode)
-        {
-            lines.Insert(log.CursorPosition, "> ");
+            if (insertMode && log.CursorPosition == i)
+            {
+                lines.Add("> ");
+            }
         }
 
         var rendered = string.Join('\n', lines);
@@ -46,6 +53,6 @@ internal static class LogRenderer
 // Cursor mode:
 //
 //  line1
-//  line2
-//> line3
+//> line2
+//  line3
 //  line4

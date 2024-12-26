@@ -22,7 +22,7 @@ while (true)
     if (insertMode)
     {
         Console.CursorLeft = 2;
-        Console.CursorTop = log.CursorPosition;
+        Console.CursorTop = log.CursorPosition + 2;
         var input = Console.ReadLine();
 
         if (string.IsNullOrWhiteSpace(input))
@@ -38,7 +38,6 @@ while (true)
                 {
                     log.Insert(LogEntryParser.ParseEntry(entry));
                 }
-                LogFileManager.Save(log);
             }
             catch (LogParsingException ex)
             {
@@ -78,6 +77,8 @@ while (true)
                 break;
         }
     }
+
+    LogFileManager.Save(log);
 }
 
 

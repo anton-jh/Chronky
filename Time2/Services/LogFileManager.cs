@@ -5,21 +5,32 @@ namespace Time2.Services;
 
 internal class LogFileManager
 {
-    private static string _logFolderPath = Path.Combine(
+    private static readonly string _logFolderPath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-        "anton-jh", "timey", "logs");
+        "anton-jh", "chronk", "logs");
 
-    private static string _tempFilePath = Path.Combine(_logFolderPath, "temp.txt");
+    private static readonly string _tempFilePath = Path.Combine(_logFolderPath, "temp.txt");
+
+    private static List<LogEntry>? _previousLog;
 
 
     public static Log? Load()
     {
-        return LoadTemp()
+        var log = LoadTemp()
             ?? LoadLatest();
+
+        _previousLog = log?.Entries.ToList();
+
+        return log;
     }
 
     public static void Save(Log log)
     {
+        if (_previousLog is not null && log.Entries.SequenceEqual(_previousLog))
+        {
+            return;
+        }
+
         if (!Directory.Exists(_logFolderPath))
         {
             Directory.CreateDirectory(_logFolderPath);
