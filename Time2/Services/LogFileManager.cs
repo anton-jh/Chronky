@@ -7,7 +7,7 @@ internal class LogFileManager
 {
     private static readonly string _logFolderPath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-        "anton-jh", "chronk", "logs");
+        "anton-jh", "timey", "logs");
 
     private static readonly string _tempFilePath = Path.Combine(_logFolderPath, "temp.txt");
 
