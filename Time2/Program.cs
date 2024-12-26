@@ -86,6 +86,12 @@ while (true)
 
 IEnumerable<string> ParseLine(string line)
 {
+    if (line == ".new")
+    {
+        log = new Log(DateTime.Now, []);
+        return [];
+    }
+
     var words = line.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
     var entries = words
