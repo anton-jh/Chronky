@@ -1,3 +1,3 @@
-﻿namespace Time2.Exceptions;
+﻿namespace Chronky.Exceptions;
 internal class LogParsingException(string message)
     : Exception(message);

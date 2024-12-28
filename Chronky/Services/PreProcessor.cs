@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
-using Time2.Exceptions;
+using Chronky.Exceptions;
 
-namespace Time2.Services;
+namespace Chronky.Services;
 
 internal abstract class PreProcessor
 {

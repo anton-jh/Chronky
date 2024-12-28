@@ -1,6 +1,6 @@
-﻿using Time2.Models;
+﻿using Chronky.Models;
 
-namespace Time2.Services;
+namespace Chronky.Services;
 internal partial class LogEntryParser
 {
     public static LogEntry ParseEntry(string entry)

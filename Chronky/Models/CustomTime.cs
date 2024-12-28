@@ -1,4 +1,4 @@
-﻿namespace Time2.Models;
+﻿namespace Chronky.Models;
 internal partial record CustomTime(int Hours, int Minutes)
 {
     public int TotalMinutes => Hours * 60 + Minutes;

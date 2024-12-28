@@ -1,6 +1,6 @@
-﻿using Time2.Models;
+﻿using Chronky.Models;
 
-namespace Time2.Services;
+namespace Chronky.Services;
 
 internal class LogValidator
 {

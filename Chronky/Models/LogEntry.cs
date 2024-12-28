@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Time2.Models;
+namespace Chronky.Models;
 
 internal abstract record LogEntry
 {

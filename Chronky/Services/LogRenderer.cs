@@ -1,6 +1,6 @@
-﻿using Time2.Models;
+﻿using Chronky.Models;
 
-namespace Time2.Services;
+namespace Chronky.Services;
 internal static class LogRenderer
 {
     public static void Render(Log log, bool insertMode, LogValidator.LogValidatorResult validationResult, int bufferWidth)

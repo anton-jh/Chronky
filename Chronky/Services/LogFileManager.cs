@@ -1,13 +1,13 @@
 ﻿using System.Globalization;
-using Time2.Models;
+using Chronky.Models;
 
-namespace Time2.Services;
+namespace Chronky.Services;
 
 internal class LogFileManager
 {
     private static readonly string _logFolderPath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-        "anton-jh", "chronky", "logs");
+        "chronky", "logs");
 
     private static readonly string _tempFilePath = Path.Combine(_logFolderPath, "temp.txt");
 

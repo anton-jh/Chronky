@@ -1,4 +1,4 @@
-﻿namespace Time2.Models;
+﻿namespace Chronky.Models;
 
 internal class Log(DateTime created, IEnumerable<LogEntry> entries)
 {
