@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Time2", "Time2\Time2.csproj", "{8D3AFD3D-28ED-465C-AB01-3C24BB5B6740}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronky", "Time2\Chronky.csproj", "{8D3AFD3D-28ED-465C-AB01-3C24BB5B6740}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
