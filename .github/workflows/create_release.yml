@@ -9,7 +9,6 @@ jobs:
   build-and-release:
     name: Build and Release
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'ref/tags/')
 
     steps:
       - name: Checkout repository
