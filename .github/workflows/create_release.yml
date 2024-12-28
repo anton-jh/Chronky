@@ -3,12 +3,13 @@ name: Publish and Release
 on:
   push:
     tags:
-      - "v*"
+      - v*
 
 jobs:
   build-and-release:
     name: Build and Release
     runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'ref/tags/')
 
     steps:
       - name: Checkout repository
@@ -65,7 +66,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./publish/windows
-          asset_name: app-windows.zip
+          asset_name: windows_64.zip
           asset_content_type: application/zip
 
       - name: Upload Linux binary
@@ -73,7 +74,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./publish/linux
-          asset_name: app-linux.zip
+          asset_name: linux_64.zip
           asset_content_type: application/zip
 
       - name: Upload macOS binary
@@ -81,5 +82,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./publish/macos
-          asset_name: app-macos.zip
+          asset_name: macos_64.zip
           asset_content_type: application/zip
