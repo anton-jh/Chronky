@@ -23,13 +23,13 @@ jobs:
         run: dotnet restore
 
       - name: Build application for Windows
-        run: dotnet publish -c Release -r win-x64 --self-contained -o ./publish/windows
+        run: dotnet publish Chronky/Chronky.csproj -c Release -r win-x64 --self-contained -o ./publish/windows
 
       - name: Build application for Linux
-        run: dotnet publish -c Release -r linux-x64 --self-contained -o ./publish/linux
+        run: dotnet publish Chronky/Chronky.csproj -c Release -r linux-x64 --self-contained -o ./publish/linux
 
       - name: Build application for macOS
-        run: dotnet publish -c Release -r osx-x64 --self-contained -o ./publish/macos
+        run: dotnet publish Chronky/Chronky.csproj -c Release -r osx-x64 --self-contained -o ./publish/macos
 
       - name: Add installers to Windows release
         run: cp ./installers/win64.ps1 ./publish/windows
