@@ -4,6 +4,9 @@ namespace Chronky.Services;
 
 internal static class LogCalculator
 {
+    private static readonly CustomTime _fullDay = new CustomTime(8, 0);
+
+
     public static LogCalculatorResult Sum(Log log, DateTime now)
     {
         var accounts = new Dictionary<string, CustomTime>();
@@ -18,7 +21,7 @@ internal static class LogCalculator
                 if (lastTime is not null && lastLabel is not null && lastTime < timeEntry.Time)
                 {
                     accounts[lastLabel] =
-                        accounts.GetValueOrDefault(lastLabel, new CustomTime(0, 0))
+                        accounts.GetValueOrDefault(lastLabel, CustomTime.Zero)
                         + timeEntry.Time - lastTime;
                 }
 
@@ -41,63 +44,59 @@ internal static class LogCalculator
                 if (lastLabel is not null)
                 {
                     accounts[subSegmentEntry.Text] =
-                        accounts.GetValueOrDefault(subSegmentEntry.Text, new CustomTime(0, 0))
+                        accounts.GetValueOrDefault(subSegmentEntry.Text, CustomTime.Zero)
                         + subSegmentEntry.TimeSpan;
 
                     accounts[lastLabel] =
-                        accounts.GetValueOrDefault(lastLabel, new CustomTime(0, 0))
+                        accounts.GetValueOrDefault(lastLabel, CustomTime.Zero)
                         - subSegmentEntry.TimeSpan;
                 }
             }
             else if (entry is ExtraSegmentLogEntry extraSegmentEntry)
             {
                 accounts[extraSegmentEntry.Text] =
-                        accounts.GetValueOrDefault(extraSegmentEntry.Text, new CustomTime(0, 0))
+                        accounts.GetValueOrDefault(extraSegmentEntry.Text, CustomTime.Zero)
                         + extraSegmentEntry.TimeSpan;
             }
         }
 
-        var isOpen = false;
+        var isOpenAndInThePast = false;
         CustomTime? endTime = null;
+        CustomTime nowCustomTime = CustomTime.FromDateTime(now);
 
-        if (lastLabel is not null && lastTime is not null)
+        if (lastLabel is not null && lastTime is not null && nowCustomTime > lastTime)
         {
-            isOpen = true;
+            isOpenAndInThePast = true;
 
             accounts[lastLabel] =
-                accounts.GetValueOrDefault(lastLabel, new CustomTime(0, 0))
-                + GetNow(now) - lastTime;
+                accounts.GetValueOrDefault(lastLabel, CustomTime.Zero)
+                + nowCustomTime - lastTime;
+
+            lastTime = nowCustomTime;
         }
 
         var total = accounts
             .Where(kv => !kv.Key.StartsWith('_'))
             .Select(kv => kv.Value)
-            .Aggregate(new CustomTime(0, 0), (acc, time) => acc + time);
+            .Aggregate(CustomTime.Zero, (acc, time) => acc + time);
 
-        if (lastTime is not null && total <= new CustomTime(8, 0))
+        if (lastTime is not null && total <= _fullDay)
         {
-            endTime = lastTime + new CustomTime(8, 0) - total;
+            endTime = lastTime + _fullDay - total;
         }
 
 
         return new LogCalculatorResult(
             accounts,
-            isOpen,
+            isOpenAndInThePast,
             endTime,
             total);
-    }
-
-    public static CustomTime GetNow(DateTime now)
-    {
-        return new CustomTime(
-            now.Hour,
-            now.Minute);
     }
 
 
     public record LogCalculatorResult(
         Dictionary<string, CustomTime> Accounts,
-        bool IsOpen,
+        bool IsOpenAndInThePast,
         CustomTime? ProjectedEndOfDay,
         CustomTime Total);
 }

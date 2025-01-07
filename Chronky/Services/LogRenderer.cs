@@ -44,9 +44,9 @@ internal static class LogRenderer
             .ToList();
 
         lines.Add("");
-        if (logResult.IsOpen)
+        if (logResult.IsOpenAndInThePast)
         {
-            lines.Add($"Assuming last period closed now ({LogCalculator.GetNow(now)}):");
+            lines.Add($"Assuming last period closed now ({CustomTime.FromDateTime(now)}):");
         }
         else
         {
@@ -68,19 +68,3 @@ internal static class LogRenderer
         Console.Write(rendered);
     }
 }
-
-
-// Insert mode:
-//
-//  line1
-//  line2
-//> [Console.ReadLine()]
-//  line3
-//
-//
-// Cursor mode:
-//
-//  line1
-//> line2
-//  line3
-//  line4

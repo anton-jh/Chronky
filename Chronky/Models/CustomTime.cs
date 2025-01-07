@@ -3,6 +3,9 @@ internal partial record CustomTime(int Hours, int Minutes)
 {
     public int TotalMinutes => Hours * 60 + Minutes;
 
+
+    public static CustomTime Zero { get; } = new CustomTime(0, 0);
+
     public override string ToString()
     {
         int absHours = Math.Abs(Hours);
@@ -52,6 +55,11 @@ internal partial record CustomTime(int Hours, int Minutes)
     {
         int totalMinutes = left.TotalMinutes - right.TotalMinutes;
         return FromTotalMinutes(totalMinutes);
+    }
+
+    public static CustomTime FromDateTime(DateTime dateTime)
+    {
+        return new CustomTime(dateTime.Hour, dateTime.Minute);
     }
 
     private static CustomTime FromTotalMinutes(int totalMinutes)
