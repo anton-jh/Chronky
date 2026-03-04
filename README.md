@@ -121,3 +121,16 @@ This _span_ is now closed. 55 minutes are counted towards _breakfast_ and 5 minu
 
 That's an extra-segment. It's very similar to sub-segments but it doesn't subtract time from anywhere,
 and instead just adds it out of nowhere!
+
+
+
+## Logs
+
+What we just created was a _log_. This log is saved as a simple text file in `%appdata%\chronky\logs`.
+
+> That's on Windows. Logs are stored in whatever folder
+`Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)` resolves to in your OS.
+
+Logs are saved after every edit.
+
+To begin a new log, simply enter the command `.new`.
