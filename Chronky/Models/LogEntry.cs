@@ -74,7 +74,7 @@ internal partial record LabelLogEntry(string Text)
     }
 
 
-    [GeneratedRegex(@"^[_a-zA-ZåäöÅÄÖ]")]
+    [GeneratedRegex(@"^[_a-zA-ZåäöÅÄÖ].*$")]
     private static partial Regex LabelRegex();
 }
 
@@ -110,7 +110,7 @@ internal partial record SubSegmentLogEntry(CustomTime TimeSpan, string Text)
     }
 
 
-    [GeneratedRegex(@"^-(?<timespan>\d\d:\d\d)=>(?<label>[_a-zA-ZåäöÅÄÖ][_a-zA-ZåäöÅÄÖ0-9]+)$")]
+    [GeneratedRegex(@"^-(?<timespan>\d\d:\d\d)=>(?<label>[_a-zA-ZåäöÅÄÖ].*)$")]
     private static partial Regex SubSegmentRegex();
 }
 
@@ -146,6 +146,6 @@ internal partial record ExtraSegmentLogEntry(CustomTime TimeSpan, string Text)
     }
 
 
-    [GeneratedRegex(@"^\+(?<timespan>\d\d:\d\d)=>(?<label>[_a-zA-ZåäöÅÄÖ][_a-zA-ZåäöÅÄÖ0-9]+)$")]
+    [GeneratedRegex(@"^\+(?<timespan>\d\d:\d\d)=>(?<label>[_a-zA-ZåäöÅÄÖ].*)$")]
     private static partial Regex ExtraSegmentRegex();
 }
